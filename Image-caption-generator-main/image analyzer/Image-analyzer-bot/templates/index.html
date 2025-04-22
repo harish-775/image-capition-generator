@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Analyzer Bot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            margin-top: 5px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result-container {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        #result {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Analyzer Bot</h1>
+        <form id="upload-form" action="/" method="post" enctype="multipart/form-data">
+            <label for="prompt">Enter your prompt:</label>
+            <input type="text" id="prompt" name="prompt" required>
+            <label for="image">Upload an image:</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
+            <button type="submit">Analyze</button>
+        </form>
+        <div id="result-container">
+            <h2>Analysis Result:</h2>
+            <p id="result"></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+            const response = await fetch('/', {
+                method: 'POST',
+                body: formData,
+            });
+            
+            const resultContainer = document.getElementById('result-container');
+            const resultElement = document.getElementById('result');
+            
+            if (response.ok) {
+                const data = await response.json();
+                resultElement.textContent = data.result;
+            } else {
+                const error = await response.json();
+                resultElement.textContent = `Error: ${error.error}`;
+            }
+            
+            resultContainer.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
